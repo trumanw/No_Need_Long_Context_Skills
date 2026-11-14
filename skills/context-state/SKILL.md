@@ -7,7 +7,7 @@ description: Maintains a compact per-workstream STATE.md plus an append-only LED
 
 Long work spans many chats. Each chat restores context from one short state file instead of re-reading the project. The method follows Belcak et al., "You don't need long context" (arXiv 2611.05306): frequent compaction keeps accuracy when the compaction is a brief for the remaining work, and full history stays on disk for selective retrieval. See [reference.md](reference.md) for the evidence behind each rule.
 
-Scripts live in this skill's `scripts/` directory. Run them with `python3 <this-skill-dir>/scripts/<name>.py`; they need only the Python 3.8+ standard library.
+Scripts live in this skill's `scripts/` directory. Run them with `python3 <this-skill-dir>/scripts/<name>.py`; they need only the Python 3.10+ standard library.
 
 Write STATE and LEDGER in the language the project's own documents use. Templates exist for `zh` and `en`.
 

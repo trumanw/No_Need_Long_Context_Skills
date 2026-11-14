@@ -77,7 +77,7 @@ python3 tools/validate_skill.py
 python3 -m unittest discover -s tests -v
 ```
 
-只需要 Python 3.8+ 标准库。CI 在 3.8 和 3.12 上跑同样两条命令。`validate_skill.py` 同时检查 `.cursor-plugin/plugin.json`：名字为小写 kebab-case、路径为相对路径且存在、`CHANGELOG.md` 有当前版本的条目。
+只需要 Python 3.10+ 标准库。CI 在 3.10 和 3.13 上跑同样两条命令。`validate_skill.py` 同时检查 `.cursor-plugin/plugin.json`：名字为小写 kebab-case、路径为相对路径且存在、`CHANGELOG.md` 有当前版本的条目。
 
 ## 发布
 
