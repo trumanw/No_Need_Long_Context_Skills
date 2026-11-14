@@ -1,0 +1,20 @@
+{
+  "name": "no-need-long-context",
+  "displayName": "No Need Long Context",
+  "version": "0.1.0",
+  "description": "Per-workstream STATE.md and append-only LEDGER.md so new chats resume multi-day work without re-reading the project.",
+  "author": {
+    "name": "trumanw"
+  },
+  "homepage": "https://github.com/trumanw/No_Need_Long_Context_Skills",
+  "repository": "https://github.com/trumanw/No_Need_Long_Context_Skills",
+  "license": "MIT",
+  "keywords": [
+    "context",
+    "compaction",
+    "handoff",
+    "agents-md",
+    "tokens"
+  ],
+  "skills": "./skills/"
+}

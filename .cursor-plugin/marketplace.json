@@ -1,0 +1,12 @@
+{
+  "name": "no-need-long-context",
+  "owner": {
+    "name": "trumanw"
+  },
+  "plugins": [
+    {
+      "name": "no-need-long-context",
+      "source": "."
+    }
+  ]
+}
