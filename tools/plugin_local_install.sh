@@ -13,6 +13,6 @@ if [ "${1:-}" = "--remove" ]; then
   exit 0
 fi
 mkdir -p "$dest"
-cp -R "$repo/.cursor-plugin" "$repo/skills" "$repo/README.md" "$repo/LICENSE" "$dest/"
+cp -R "$repo/.cursor-plugin" "$repo/skills" "$repo/hooks" "$repo/README.md" "$repo/LICENSE" "$dest/"
 find "$dest" -name __pycache__ -type d -prune -exec rm -rf {} +
 echo "installed $dest; run Developer: Reload Window, then check Customize"

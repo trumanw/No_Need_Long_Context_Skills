@@ -21,7 +21,8 @@ skills/context-state/
   templates/{zh,en}/  AGENTS.md 规则块、STATE、LEDGER 模板
   scripts/init.py     初始化目标仓库（可重复执行）
   scripts/check.py    检查 STATE 是否超长、过期、未入索引
-tools/validate_skill.py   校验 SKILL.md 格式
+hooks/                    提醒钩子（见下文）
+tools/validate_skill.py   校验 SKILL.md 与插件描述文件
 tools/dev_install.sh      把 skills/ 软链到 ~/.cursor/skills/
 tests/                    脚本的单元测试
 ```
@@ -49,6 +50,25 @@ python3 $S/check.py --root .
 ```
 
 `init.py` 只管理 `AGENTS.md` 中 `<!-- context-state:begin -->` 与 `<!-- context-state:end -->` 之间的内容，其余内容保持不变；重复运行不会重复插入。首版 `STATE.md` 不由脚本生成，需要 agent 读一遍已有材料后填写（Skill 中的 Workflow B）。
+
+## 提醒钩子
+
+`hooks/` 在每轮对话结束时检查：本轮 agent 编辑过某条工作线下的文件，而该工作线的 `STATE.md` 比这些编辑旧，就发一条后续消息，要求按 Workflow D 补写 LEDGER 和 STATE。还没有 `STATE.md` 的工作线、只改 STATE 或 LEDGER、被中止的轮次，都不提醒；每轮最多提醒一次。钩子出错时什么都不做，不会阻断对话。
+
+- 装插件时钩子随插件生效。
+- 只用 `tools/dev_install.sh` 装 Skill 时，钩子不会生效。需要的话，在 `~/.cursor/hooks.json` 里加两条，把 `${CURSOR_PLUGIN_ROOT}` 换成本仓库的绝对路径：
+
+```json
+{
+  "version": 1,
+  "hooks": {
+    "afterFileEdit": [{ "command": "python3 /path/to/No_Need_Long_Context_Skills/hooks/context_state_hook.py record" }],
+    "stop": [{ "command": "python3 /path/to/No_Need_Long_Context_Skills/hooks/context_state_hook.py stop", "loop_limit": 1 }]
+  }
+}
+```
+
+钩子只能看到 agent 通过编辑工具改的文件，看不到 shell 命令改的文件或提交的作业。
 
 ## 开发与测试
 
