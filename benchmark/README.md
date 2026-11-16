@@ -1,5 +1,7 @@
 # Token 对照实验
 
+中文 | [English](README.en.md)
+
 用 Cursor SDK 在同一个合成项目上对比两种条件，记录 SDK 报告的 token 用量和答案正确率，并按 Cursor 标价换算成美元。
 
 - **baseline**：项目只有一份普通的 `AGENTS.md`（项目说明和目录）。

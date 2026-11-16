@@ -1,5 +1,7 @@
 # No Need Long Context Skills
 
+中文 | [English](README.en.md)
+
 Cursor Agent Skills that keep agent context short on long-running projects. Based on Belcak et al., ["You don't need long context"](https://arxiv.org/abs/2611.05306) (2026).
 
 让长周期项目（实验跨几天、跨多个对话）不再依赖整库重读：每条工作线维护一份约 4000 字符的 `STATE.md` 作为压缩状态，完整历史写进只追加的 `LEDGER.md`，新对话只读一份 STATE，其余内容按需检索。
