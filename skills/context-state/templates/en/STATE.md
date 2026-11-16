@@ -40,7 +40,7 @@ Done when: <the result that counts as completion>
 
 ## 9. Remaining plan (in order)
 
-1. Next: <concrete command or edit>
+1. Next: <command or script that exists in the project, or a specific edit>
 2. <subgoal>
 
 ## 10. Contradictions between sources

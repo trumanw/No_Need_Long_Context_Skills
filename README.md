@@ -2,7 +2,29 @@
 
 Cursor Agent Skills that keep agent context short on long-running projects. Based on Belcak et al., ["You don't need long context"](https://arxiv.org/abs/2611.05306) (2026).
 
-让长周期项目（实验跨几天、跨多个对话）不再依赖整库重读：每条工作线维护一份不超过约 4000 字符的 `STATE.md` 作为压缩状态，完整历史写进只追加的 `LEDGER.md`，新对话只读一份 STATE，其余内容按需检索。
+让长周期项目（实验跨几天、跨多个对话）不再依赖整库重读：每条工作线维护一份约 4000 字符的 `STATE.md` 作为压缩状态，完整历史写进只追加的 `LEDGER.md`，新对话只读一份 STATE，其余内容按需检索。
+
+## 实测效果
+
+在一个合成的多日研究项目上，用 Cursor SDK 对比两种条件：baseline 是普通的 `AGENTS.md`，context-state 是装好本 Skill 并写好首版 STATE 的同一个项目。测了两个模型、三档项目规模，每个任务重复 3 次，共 294 次运行，费用按 Cursor 标价换算。
+
+- 新对话接手时，context-state 在所有规模下都省钱：Grok 4.7 省 34% 到 52%，Composer 2.5 省 35% 到 59%。
+- 连续四天、每天一个新对话推进工作时，节省随项目规模增长：在 6 倍规模下，Grok 4.7 省 15%，Composer 2.5 省 40%。最小的项目里，Grok 4.7 只是持平。
+- 答对率几乎没有变化：两种条件下关键事实都几乎全对，context-state 只漏了一个事实（Grok 4.7，3 倍规模）。
+- 首版 STATE 是一次性成本：Grok 4.7 花 $0.23 到 $0.81，Composer 2.5 花 $0.07 到 $0.13，约 5 到 14 次接手后回本。
+
+![每组任务的费用](benchmark/results/figures/cost.png)
+
+| 规模 | 场景 | Grok 4.7：baseline → context-state | 省下 | Composer 2.5：baseline → context-state | 省下 |
+|---|---|---|---|---|---|
+| 1 倍 | 新对话接手（4 个任务） | $0.469 → $0.225 | 52% | $0.076 → $0.047 | 39% |
+| 3 倍 | 新对话接手（4 个任务） | $0.500 → $0.266 | 47% | $0.088 → $0.057 | 35% |
+| 6 倍 | 新对话接手（4 个任务） | $0.557 → $0.368 | 34% | $0.111 → $0.046 | 59% |
+| 1 倍 | 连续四天 | $0.755 → $0.747 | 1% | $0.111 → $0.092 | 17% |
+| 3 倍 | 连续四天 | $0.935 → $0.842 | 10% | $0.155 → $0.084 | 46% |
+| 6 倍 | 连续四天 | $1.000 → $0.852 | 15% | $0.188 → $0.113 | 40% |
+
+答案分散在多个文件里的接手任务省得最多，达 50% 到 75%；答案就在一个文件里的任务基本持平。每天要做新工作的那几天，context-state 还要额外记录，所以不省；省下的钱主要来自之后的接手。逐任务的均值与标准差、token 用量、其余图表和测试方法见 [`benchmark/results/summary.md`](benchmark/results/summary.md) 与 [`benchmark/README.md`](benchmark/README.md)。
 
 ## Skills
 

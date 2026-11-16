@@ -1,6 +1,6 @@
 ---
 name: context-state
-description: Maintains a compact per-workstream STATE.md plus an append-only LEDGER.md so that new chats resume long-running, multi-day work without re-reading the whole project. Use when setting up context handoff in a repository, resuming or handing off an experiment or workstream, after submitting or finishing long jobs, when a chat has grown long, or when the user mentions STATE.md, LEDGER.md, handoff, context compaction, or saving tokens.
+description: Maintains a compact per-workstream STATE.md plus an append-only LEDGER.md so that new chats resume long-running, multi-day work without re-reading the whole project. Use when setting up context handoff in a repository, writing the first STATE.md for a workstream, checking or repairing STATE and LEDGER files, or when the user asks about context compaction, handoff, or saving tokens. In a repository whose AGENTS.md already has the context-state block, routine resumes and updates follow that block and do not need this skill.
 ---
 
 # Context State
@@ -16,7 +16,7 @@ Write STATE and LEDGER in the language the project's own documents use. Template
 | File | Rule |
 |---|---|
 | `AGENTS.md` | Managed rules block between `<!-- context-state:begin -->` and `<!-- context-state:end -->`, plus a workstream index. Loaded every chat, so keep it short. |
-| `<workstream>/STATE.md` | Overwritten on each update. At most about 4000 characters. |
+| `<workstream>/STATE.md` | Overwritten on each update. Aims at about 4000 characters; up to 25% over needs no rewrite for length. |
 | `<workstream>/LEDGER.md` | Append-only. One line per event: `time | event type | content and key values | path or job ID`. Never read whole; search with `rg`. |
 | `.agents/STATE_TEMPLATE.md` | Section layout for STATE.md. |
 
@@ -34,15 +34,15 @@ Write STATE and LEDGER in the language the project's own documents use. Template
 
 1. Read the workstream's own documents and result files once. Do not read other workstreams.
 2. Check live jobs (scheduler, systemd, process list, log tails) before writing anything about them.
-3. Fill `.agents/STATE_TEMPLATE.md`. Mark facts taken from reports but not checked against result files.
+3. Fill `.agents/STATE_TEMPLATE.md` and write STATE.md in one whole-file write. Mark facts taken from reports but not checked against result files.
 4. Backfill LEDGER.md from documents and file times. Mark inferred times as inferred.
 5. Compare documents with each other and with the code that runs. Record every disagreement under contradictions.
-6. Update the workstream's status line in the `AGENTS.md` index, then run `scripts/check.py`.
+6. Update the workstream's status line in the `AGENTS.md` index, then run `scripts/check.py` once. If it reports STATE over the limit, move one stable section into a report with a pointer, in a single edit; do not trim sentence by sentence and recheck.
 
 ## Workflow C: resume in a new chat
 
-1. Read only the requested workstream's STATE.md.
-2. If it lists running jobs, run their check commands first and update STATE.
+1. Read only the requested workstream's STATE.md. A request names a workstream when it mentions its name, its directory, or any file under it; map paths to workstreams with the index in AGENTS.md.
+2. If it lists running jobs, run their check commands first. Update STATE only if the result differs from what it records; an unchanged check needs no rewrite.
 3. Read other files only through STATE's pointers: locate with `rg -n`, then read a bounded window (about 200 lines or 6000 characters).
 4. When STATE is missing, stale, or contradicted by files on disk, trust the files and fix STATE.
 
@@ -51,9 +51,9 @@ Write STATE and LEDGER in the language the project's own documents use. Template
 Triggers: a long job is submitted, cancelled, or found failed; a result yields a conclusion; a decision is made or reversed; the user states a new constraint (record it verbatim); the chat is ending; the chat has grown long (update, then suggest a new chat).
 
 1. Run `date` and use its output for every timestamp; never estimate the time. Append the event to LEDGER.md.
-2. Rewrite STATE.md from three inputs: the old STATE, the new LEDGER lines, and the files on disk. Do not summarize the old STATE again.
+2. Rewrite STATE.md in one whole-file write from three inputs: the old STATE, the new LEDGER lines, and the files on disk. Do not summarize the old STATE again. Keep its layout; there is no need to reread the template.
 3. Apply the compaction rules below.
-4. Update the index status line and run `python3 scripts/check.py --root <repo>`.
+4. Update the index status line. A routine update needs no `check.py` run; if STATE is over the limit, move one stable section into a report with a pointer instead of trimming repeatedly. Routine updates do not edit reports that hold moved-out sections.
 
 ## Compaction rules
 
@@ -61,7 +61,7 @@ Triggers: a long job is submitted, cancelled, or found failed; a result yields a
 - Copy the objective verbatim and state the completion criterion.
 - Keep verified facts and unverified hypotheses apart. Every verified fact names its source (path, heading, line, or job ID). A check that was not run is not verified.
 - Record failed approaches under dead ends, with the reason and evidence path.
-- Make the next step concrete: a command or an edit.
+- Make the next step concrete: a command or script that exists in the project, or a specific edit. A step you have not confirmed how to do is a hypothesis with a way to find out, not a plan item; do not invent steps such as a merge that the pipeline may already do.
 - List every source when a fact comes from several files. When files disagree, record both sources and the current choice; never silently pick one.
 - Record coverage: which files and sections were read and what they yielded, and what was not read.
 - Do not paste long output. Write a narrow command that retrieves it.

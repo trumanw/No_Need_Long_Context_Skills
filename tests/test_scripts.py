@@ -103,8 +103,12 @@ class CheckTests(unittest.TestCase):
         self.assertIn(("ERROR", "w/STATE.md"), self.levels())
         self.assertEqual(run(check.main, "--root", str(self.root))[0], 1)
 
+    def test_slightly_over_is_ok(self):
+        self.write_state("x" * 4800)
+        self.assertIn(("OK", "w/STATE.md"), self.levels())
+
     def test_oversize_warns(self):
-        self.write_state("x" * 4500)
+        self.write_state("x" * 5300)
         self.assertIn(("WARN", "w/STATE.md"), self.levels())
         self.assertEqual(run(check.main, "--root", str(self.root))[0], 0)
         self.assertEqual(run(check.main, "--root", str(self.root), "--strict")[0], 1)

@@ -66,8 +66,8 @@ def check(root: Path, limit: int):
         n = len(text)
         if n > limit * 1.5:
             add("ERROR", rel, f"{n} chars, far over the {limit} limit; move stable facts to a report")
-        elif n > limit * 1.05:
-            add("WARN", rel, f"{n} chars, over the {limit} limit")
+        elif n > limit * 1.25:
+            add("WARN", rel, f"{n} chars, over the {limit} limit; move one stable section to a report")
         updated_line = next((ln for ln in text.splitlines() if ln.lower().startswith("updated:")), None)
         updated = parse_time(updated_line) if updated_line else None
         if updated is None:

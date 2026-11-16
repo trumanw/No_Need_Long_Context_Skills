@@ -1,0 +1,22 @@
+{
+  "source": "https://cursor.com/docs/models-and-pricing",
+  "retrieved": "2026-11-15",
+  "unit": "USD per 1M tokens",
+  "notes": "cache_write null means no separate cache-write fee; cache writes bill at the input rate. Grok 4.7 bills long-context rates only when one request's input exceeds 256k tokens; the standard 256k window never does.",
+  "models": [
+    {"label": "Composer 2.5", "match": {"id": "composer-2.5", "fast": "false"},
+     "input": 0.5, "cache_read": 0.2, "cache_write": null, "output": 2.5},
+    {"label": "Composer 2.5 (Fast)", "match": {"id": "composer-2.5", "fast": "true"},
+     "input": 3, "cache_read": 0.5, "cache_write": null, "output": 15},
+    {"label": "Grok 4.7", "match": {"id": "grok-4.7", "fast": "false"},
+     "input": 2, "cache_read": 0.5, "cache_write": null, "output": 6},
+    {"label": "Grok 4.7 (Fast)", "match": {"id": "grok-4.7", "fast": "true"},
+     "input": 4, "cache_read": 1, "cache_write": null, "output": 12},
+    {"label": "Grok 4.7 500k", "match": {"id": "grok-4.7", "context": "500k", "fast": "false"},
+     "input": 4, "cache_read": 1, "cache_write": null, "output": 12},
+    {"label": "Grok 4.7 500k (Fast)", "match": {"id": "grok-4.7", "context": "500k", "fast": "true"},
+     "input": 6, "cache_read": 1.5, "cache_write": null, "output": 18},
+    {"label": "Kimi K3", "match": {"id": "kimi-k3"},
+     "input": 3, "cache_read": 0.3, "cache_write": null, "output": 15}
+  ]
+}
