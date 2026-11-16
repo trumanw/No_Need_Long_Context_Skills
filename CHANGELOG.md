@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.0 - 2026-11-16
+
+- First release for the public Cursor marketplace. No skill, script, or hook changes since 0.2.1.
+- English READMEs: `README.en.md` and `benchmark/README.en.md`, linked from the Chinese ones.
+
 ## 0.2.1 - 2026-11-16
 
 - Rules block and resume workflow: a request names a workstream when it mentions its name, its directory, or any file under it. Re-run `init.py` to update an existing `AGENTS.md`.
