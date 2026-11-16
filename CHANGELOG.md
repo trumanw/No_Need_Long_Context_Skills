@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.2 - 2026-11-16
+
+- Plugin logo: `assets/logo.png` (512×512) referenced from `plugin.json`, with `assets/logo.svg` as its source.
+
 ## 0.3.1 - 2026-11-16
 
 - The plugin moved from the repository root into `no-need-long-context/`, and `marketplace.json` names it by its bare directory name. Cursor's GitHub import rejected the root-level `"source": "."` without an error, so 0.3.0 could not be installed that way. No skill, script, or hook changes.
