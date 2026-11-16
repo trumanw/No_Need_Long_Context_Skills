@@ -22,8 +22,8 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-SKILL_DIR = REPO / "skills" / "context-state"
-HOOK_SCRIPT = REPO / "hooks" / "context_state_hook.py"
+SKILL_DIR = REPO / "no-need-long-context" / "skills" / "context-state"
+HOOK_SCRIPT = REPO / "no-need-long-context" / "hooks" / "context_state_hook.py"
 
 SEED = 20261114
 WORKSTREAMS = ("dft-screen", "ml-surrogate", "kinetics")

@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-SCRIPTS = Path(__file__).resolve().parent.parent / "skills" / "context-state" / "scripts"
+SCRIPTS = Path(__file__).resolve().parent.parent / "no-need-long-context" / "skills" / "context-state" / "scripts"
 sys.path.insert(0, str(SCRIPTS))
 
 import check  # noqa: E402

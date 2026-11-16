@@ -7,7 +7,7 @@ import time
 import unittest
 from pathlib import Path
 
-HOOK = Path(__file__).resolve().parent.parent / "hooks" / "context_state_hook.py"
+HOOK = Path(__file__).resolve().parent.parent / "no-need-long-context" / "hooks" / "context_state_hook.py"
 
 
 class HookTests(unittest.TestCase):

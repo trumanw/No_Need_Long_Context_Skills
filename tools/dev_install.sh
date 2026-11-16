@@ -6,7 +6,7 @@ set -euo pipefail
 repo="$(cd "$(dirname "$0")/.." && pwd)"
 dest="${CURSOR_SKILLS_DIR:-$HOME/.cursor/skills}"
 mkdir -p "$dest"
-for skill in "$repo"/skills/*/; do
+for skill in "$repo"/no-need-long-context/skills/*/; do
   name="$(basename "$skill")"
   link="$dest/$name"
   if [ "${1:-}" = "--remove" ]; then

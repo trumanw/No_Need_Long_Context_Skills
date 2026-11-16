@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1 - 2026-11-16
+
+- The plugin moved from the repository root into `no-need-long-context/`, and `marketplace.json` names it by its bare directory name. Cursor's GitHub import rejected the root-level `"source": "."` without an error, so 0.3.0 could not be installed that way. No skill, script, or hook changes.
+- `validate_skill.py` reads plugins from `marketplace.json` and fails on a `source` of `.` or `./dir`.
+
 ## 0.3.0 - 2026-11-16
 
 - First release for the public Cursor marketplace. No skill, script, or hook changes since 0.2.1.

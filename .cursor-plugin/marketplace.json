@@ -1,12 +1,16 @@
 {
-  "name": "no-need-long-context",
+  "name": "trumanw-plugins",
   "owner": {
     "name": "trumanw"
+  },
+  "metadata": {
+    "description": "Cursor plugins that keep agent context short on long-running projects."
   },
   "plugins": [
     {
       "name": "no-need-long-context",
-      "source": "."
+      "source": "no-need-long-context",
+      "description": "Per-workstream STATE.md and append-only LEDGER.md so new chats resume multi-day work without re-reading the project."
     }
   ]
 }

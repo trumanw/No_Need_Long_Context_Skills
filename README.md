@@ -32,24 +32,30 @@ Cursor Agent Skills that keep agent context short on long-running projects. Base
 
 | Skill | 作用 |
 |---|---|
-| [`context-state`](skills/context-state/SKILL.md) | 初始化项目、从已有文档生成首版 STATE、新对话接手、事件触发的状态更新、交接 |
+| [`context-state`](no-need-long-context/skills/context-state/SKILL.md) | 初始化项目、从已有文档生成首版 STATE、新对话接手、事件触发的状态更新、交接 |
 
-依据与各条规则的出处见 [`skills/context-state/reference.md`](skills/context-state/reference.md)。
+依据与各条规则的出处见 [`reference.md`](no-need-long-context/skills/context-state/reference.md)。
 
 ## 目录
 
 ```text
-skills/context-state/
-  SKILL.md            agent 读的流程与规则
-  reference.md        论文依据（按需读）
-  templates/{zh,en}/  AGENTS.md 规则块、STATE、LEDGER 模板
-  scripts/init.py     初始化目标仓库（可重复执行）
-  scripts/check.py    检查 STATE 是否超长、过期、未入索引
-hooks/                    提醒钩子（见下文）
-tools/validate_skill.py   校验 SKILL.md 与插件描述文件
-tools/dev_install.sh      把 skills/ 软链到 ~/.cursor/skills/
+.cursor-plugin/marketplace.json   向 Cursor 的 GitHub 导入和市场登记插件
+no-need-long-context/             插件本体
+  .cursor-plugin/plugin.json      插件描述文件
+  skills/context-state/
+    SKILL.md            agent 读的流程与规则
+    reference.md        论文依据（按需读）
+    templates/{zh,en}/  AGENTS.md 规则块、STATE、LEDGER 模板
+    scripts/init.py     初始化目标仓库（可重复执行）
+    scripts/check.py    检查 STATE 是否超长、过期、未入索引
+  hooks/                提醒钩子（见下文）
+tools/validate_skill.py   校验市场描述文件、插件描述文件与 SKILL.md
+tools/dev_install.sh      把 Skill 软链到 ~/.cursor/skills/
 tests/                    脚本的单元测试
+benchmark/                token 与费用实测
 ```
+
+Cursor 的导入要求每个插件放在单独的子目录里，`marketplace.json` 中的 `source` 只写目录名。插件直接放在仓库根目录（`"source": "."`）会被拒绝，而且不报错。
 
 ## 安装
 
@@ -77,17 +83,17 @@ python3 $S/check.py --root .
 
 ## 提醒钩子
 
-`hooks/` 在每轮对话结束时检查：本轮 agent 编辑过某条工作线下的文件，而该工作线的 `STATE.md` 比这些编辑旧，就发一条后续消息，要求按 Workflow D 补写 LEDGER 和 STATE。还没有 `STATE.md` 的工作线、只改 STATE 或 LEDGER、被中止的轮次，都不提醒；每轮最多提醒一次。钩子出错时什么都不做，不会阻断对话。
+`no-need-long-context/hooks/` 中的钩子在每轮对话结束时检查：本轮 agent 编辑过某条工作线下的文件，而该工作线的 `STATE.md` 比这些编辑旧，就发一条后续消息，要求按 Workflow D 补写 LEDGER 和 STATE。还没有 `STATE.md` 的工作线、只改 STATE 或 LEDGER、被中止的轮次，都不提醒；每轮最多提醒一次。钩子出错时什么都不做，不会阻断对话。
 
 - 装插件时钩子随插件生效。
-- 只用 `tools/dev_install.sh` 装 Skill 时，钩子不会生效。需要的话，在 `~/.cursor/hooks.json` 里加两条，把 `${CURSOR_PLUGIN_ROOT}` 换成本仓库的绝对路径：
+- 只用 `tools/dev_install.sh` 装 Skill 时，钩子不会生效。需要的话，在 `~/.cursor/hooks.json` 里加两条，把 `${CURSOR_PLUGIN_ROOT}` 换成插件目录的绝对路径：
 
 ```json
 {
   "version": 1,
   "hooks": {
-    "afterFileEdit": [{ "command": "python3 /path/to/No_Need_Long_Context_Skills/hooks/context_state_hook.py record" }],
-    "stop": [{ "command": "python3 /path/to/No_Need_Long_Context_Skills/hooks/context_state_hook.py stop", "loop_limit": 1 }]
+    "afterFileEdit": [{ "command": "python3 /path/to/No_Need_Long_Context_Skills/no-need-long-context/hooks/context_state_hook.py record" }],
+    "stop": [{ "command": "python3 /path/to/No_Need_Long_Context_Skills/no-need-long-context/hooks/context_state_hook.py stop", "loop_limit": 1 }]
   }
 }
 ```
@@ -101,15 +107,15 @@ python3 tools/validate_skill.py
 python3 -m unittest discover -s tests -v
 ```
 
-只需要 Python 3.10+ 标准库。CI 在 3.10 和 3.13 上跑同样两条命令。`validate_skill.py` 同时检查 `.cursor-plugin/plugin.json`：名字为小写 kebab-case、路径为相对路径且存在、`CHANGELOG.md` 有当前版本的条目。
+只需要 Python 3.10+ 标准库。CI 在 3.10 和 3.13 上跑同样两条命令。`validate_skill.py` 同时检查描述文件：`.cursor-plugin/marketplace.json` 中每个 `source` 都是只写目录名的子目录，且其中插件同名；`no-need-long-context/.cursor-plugin/plugin.json` 名字为小写 kebab-case、路径为相对路径且存在、`CHANGELOG.md` 有当前版本的条目。
 
 ## 发布
 
-1. 改 `.cursor-plugin/plugin.json` 的 `version`，在 `CHANGELOG.md` 加同版本条目，跑通上面两条检查。
+1. 改 `no-need-long-context/.cursor-plugin/plugin.json` 的 `version`，在 `CHANGELOG.md` 加同版本条目，跑通上面两条检查。
 2. 本地插件测试（`tools/plugin_local_install.sh`），在 Customize 中确认能看到 `context-state`。
-3. 提交、打标签并推送：`git tag v0.1.0 && git push origin main --tags`。
+3. 提交、打标签并推送：`git tag vX.Y.Z && git push origin main --tags`。
 4. 渠道：
-   - **GitHub 导入**：推送后即可用，无需审核。
+   - **GitHub 导入**：推送后即可用，无需审核。Customize → From GitHub Repository 只是把仓库加为插件来源，之后要在列表里找到 `No Need Long Context` 并安装。
    - **团队市场**（Teams / Enterprise）：Dashboard → Plugins & MCPs → Add Marketplace → Import from Repo。可开启 Auto Refresh，自动跟随仓库更新。
    - **公开市场**：在 [cursor.com/marketplace/publish](https://cursor.com/marketplace/publish) 提交公开仓库地址。每个版本都要人工审核，审核通过后不会自动跟随仓库更新。
 
